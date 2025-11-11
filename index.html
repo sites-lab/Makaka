@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Миколы 💻</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 95%;
+            width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .tech-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .tech-element {
+            position: absolute;
+            font-size: 20px;
+            animation: float 8s ease-in-out infinite;
+            opacity: 0.7;
+            user-select: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            25% { transform: translateY(-30px) translateX(10px) rotate(5deg); }
+            50% { transform: translateY(-15px) translateX(-10px) rotate(-5deg); }
+            75% { transform: translateY(-25px) translateX(5px) rotate(3deg); }
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: clamp(1.8em, 5vw, 2.5em);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+            to { text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.5); }
+        }
+
+        .code-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        .code-input:focus {
+            outline: none;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin: 10px 5px;
+            min-width: 140px;
+        }
+
+        .btn:hover, .btn:active {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        .btn-music {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .content {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .photo-item {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-item img, .photo-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .hint {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Стили для гитарного симулятора */
+        .guitar-simulator {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .guitar-string {
+            height: 40px;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            margin: 10px 0;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+
+        .guitar-string:active {
+            transform: scale(0.95);
+            background: linear-gradient(90deg, #e67e22, #d35400);
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            color: #d4d4d4;
+        }
+
+        .code-line {
+            margin: 5px 0;
+        }
+
+        .code-comment {
+            color: #6a9955;
+        }
+
+        .code-function {
+            color: #dcdcaa;
+        }
+
+        .code-string {
+            color: #ce9178;
+        }
+
+        /* Навигация */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+                margin: 10px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-width: 120px;
+            }
+            
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Салют */
+        .firework {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .friend-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-elements" id="techElements"></div>
+    
+    <!-- Экран ввода кода -->
+    <div id="screen1" class="screen active">
+        <div class="container">
+            <h1>💻 Для мого найкращого друга 💻</h1>
+            <p style="color: white; margin-bottom: 20px;">Введи наш особливий код:</p>
+            <input type="password" class="code-input" id="codeInput" placeholder="8 цифр нашої дружби..." inputmode="numeric">
+            <button class="btn" onclick="checkCode()">Відкрити сюрприз</button>
+            <div class="hint">Підказка: важлива дата у цифрах</div>
+            <div id="error" class="error hidden">Невірний код, спробуй ще раз, брате 💪</div>
+        </div>
+    </div>
+
+    <!-- Головна сторінка -->
+    <div id="screen2" class="screen">
+        <div class="container">
+            <h1>З Днем Народження, Миколо! 🎉</h1>
+            
+            <div class="message">
+                <h2>Мій найкращий друг! 👊</h2>
+                <p>Ти - найкрутіший друг, якого я коли-небудь мав! Цей сайт - маленьке втілення нашої дружби.</p>
+            </div>
+
+            <div class="friend-stats">
+                <div class="stat-item">
+                    <h3>🎸 Гітара</h3>
+                    <p>Рок-зірка</p>
+                </div>
+                <div class="stat-item">
+                    <h3>💻 Кодування</h3>
+                    <p>Senior Developer</p>
+                </div>
+                <div class="stat-item">
+                    <h3>👑 Дружба</h3>
+                    <p>Професіонал</p>
+                </div>
+                <div class="stat-item">
+                    <h3>🎮 Крутість</h3>
+                    <p>Level: MAX</p>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="globalProgress" style="width: 10%;"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn" onclick="showScreen('screen3')">Наші фото 📸</button>
+                <button class="btn btn-music" onclick="showScreen('screen4')">Гітарний симулятор 🎸</button>
+                <button class="btn btn-secondary" onclick="showScreen('screen5')">Код дружби 💻</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Галерея фото -->
+    <div id="screen3" class="screen">
+        <div class="container">
+            <h1>Наші спогади 📸</h1>
+            
+            <div class="photo-grid">
+                <div class="photo-item">
+                    <img src="https://example.com/photo1.jpg" alt="Наше фото 1" onerror="this.style.display='none'">
+                </div>
+                <div class="photo-item">
+                    <img src="https://example.com/photo2.jpg" alt="Наше фото 2" onerror="this.style.display='none'">
+                </div>
+                <div class="photo-item">
+                    <img src="https://example.com/photo3.jpg" alt="Наше фото 3" onerror="this.style.display='none'">
+                </div>
+                <div class="photo-item">
+                    <img src="https://example.com/photo4.jpg" alt="Наше фото 4" onerror="this.style.display='none'">
+                </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <div class="photo-item">
+                    <video controls style="width: 100%; border-radius: 15px;">
+                        <source src="https://example.com/video.mp4" type="video/mp4">
+                        Твій браузер не підтримує відео.
+                    </video>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showScreen('screen2')">← Назад</button>
+                <button class="btn btn-music" onclick="showScreen('screen4')">Далі →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Гітарний симулятор -->
+    <div id="screen4" class="screen">
+        <div class="container">
+            <h1>Віртуальна гітара 🎸</h1>
+            
+            <div class="guitar-simulator">
+                <div class="guitar-string" onclick="playGuitarSound(0)">🎸 Струна E (Велика октава)</div>
+                <div class="guitar-string" onclick="playGuitarSound(1)">🎸 Струна A (Ля)</div>
+                <div class="guitar-string" onclick="playGuitarSound(2)">🎸 Струна D (Ре)</div>
+                <div class="guitar-string" onclick="playGuitarSound(3)">🎸 Струна G (Соль)</div>
+                <div class="guitar-string" onclick="playGuitarSound(4)">🎸 Струна B (Сі)</div>
+                <div class="guitar-string" onclick="playGuitarSound(5)">🎸 Струна e (Мала октава)</div>
+            </div>
+
+            <div class="message">
+                <h3>🎶 Гітарні акорди для нас 🎶</h3>
+                <p><strong>Am</strong> - Наша дружба</p>
+                <p><strong>C</strong> - Кодування до пізньої ночі</p>
+                <p><strong>G</strong> - Гітарні джеми</p>
+                <p><strong>D</strong> - Дні, які ми провели разом</p>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showScreen('screen3')">← Назад</button>
+                <button class="btn" onclick="showScreen('screen5')">Далі →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Код дружби -->
+    <div id="screen5" class="screen">
+        <div class="container">
+            <h1>Код нашої дружби 💻</h1>
+            
+            <div class="code-editor">
+                <div class="code-line"><span class="code-comment">// Наша дружба - найкращий код</span></div>
+                <div class="code-line"><span class="code-function">function</span> <span style="color:#569cd6">нашаДружба</span>() {</div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">let</span> <span style="color:#9cdcfe">дружба</span> = {</div>
+                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe">кодування</span>: <span class="code-string">"до пізньої ночі"</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe">гітара</span>: <span class="code-string">"рок-н-рол"</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe">сміх</span>: <span class="code-string">"безмежний"</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9cdcfe">підтримка</span>: <span class="code-string">"завжди"</span></div>
+                <div class="code-line">&nbsp;&nbsp;};</div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">return</span> <span style="color:#9cdcfe">дружба</span>.<span style="color:#dcdcaa">триватиВічно</span>();</div>
+                <div class="code-line">}</div>
+            </div>
+
+            <div class="message">
+                <h2>Для мого брата по коду і гітарі 🤘</h2>
+                <p>Кожен момент з тобою - це як найкращий алгоритм: ефективний, елегантний і без багів! </p>
+                <p>Дякую тобі за все: за спільні нічні кодинги, за гітарні джеми, за дружбу... 🚀</p>
+            </div>
+
+            <div class="message">
+                <h3>P.S. Код 23122009</h3>
+                <p style="font-size: 14px; color: #666;">Ця дата назавжди в моєму серці як початок чогось справді крутого... 💫</p>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showScreen('screen4')">← Назад</button>
+                <button class="btn" onclick="createFireworks(); showScreen('screen6')">Запустити салют! 🎆</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Фінальний екран з салютом -->
+    <div id="screen6" class="screen">
+        <div class="container">
+            <h1>🎉 З Днем Народження! 🎉</h1>
+            
+            <div class="message">
+                <h2>Ти найкращий друг! 👑</h2>
+                <p>Нехай цей день буде наповнений щастям, сміхом і крутими ідеями для коду!</p>
+                <p>Ти заслуговуєш усього найкращого! Зростай як розробник і як людина! 🌟</p>
+            </div>
+
+            <div style="font-size: 48px; margin: 20px 0;">
+                💻🎸🎁✨🚀
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn" onclick="showScreen('screen2')">⟳ Почати спочатку</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 'screen1';
+
+        // Створюємо технічні елементи
+        function createTechElements() {
+            const container = document.getElementById('techElements');
+            const elements = ['💻', '🎸', '🚀', '⭐', '👨‍💻', '🎵', '🔧', '🎮', '📱', '💾'];
+            
+            for (let i = 0; i < 25; i++) {
+                const element = document.createElement('div');
+                element.className = 'tech-element';
+                element.textContent = elements[Math.floor(Math.random() * elements.length)];
+                element.style.left = Math.random() * 100 + 'vw';
+                element.style.top = Math.random() * 100 + 'vh';
+                element.style.animationDelay = Math.random() * 8 + 's';
+                element.style.fontSize = (Math.random() * 20 + 12) + 'px';
+                element.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(element);
+            }
+        }
+
+        // Показ екрану
+        function showScreen(screenId) {
+            document.getElementById(currentScreen).classList.remove('active');
+            document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+            
+            // Оновлюємо прогрес
+            updateProgress();
+            
+            // Запускаємо салют на фінальному екрані
+            if (screenId === 'screen6') {
+                createFireworks();
+                setInterval(createFireworks, 2000);
+            }
+        }
+
+        // Оновлення прогрес-бару
+        function updateProgress() {
+            const screens = ['screen2', 'screen3', 'screen4', 'screen5', 'screen6'];
+            const currentIndex = screens.indexOf(currentScreen);
+            const progress = ((currentIndex + 1) / screens.length) * 100;
+            document.getElementById('globalProgress').style.width = progress + '%';
+        }
+
+        // Перевірка коду
+        function checkCode() {
+            const code = document.getElementById('codeInput').value;
+            const error = document.getElementById('error');
+            
+            if (code === '23122009') { 
+                createFireworks();
+                setTimeout(() => {
+                    showScreen('screen2');
+                }, 1500);
+            } else {
+                error.classList.remove('hidden');
+                setTimeout(() => error.classList.add('hidden'), 3000);
+            }
+        }
+
+        // Салют
+        function createFireworks() {
+            const colors = ['#e74c3c', '#3498db', '#9b59b6', '#2ecc71', '#f1c40f', '#1abc9c'];
+            const container = document.getElementById('techElements');
+            
+            for (let i = 0; i < 20; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.width = '8px';
+                firework.style.height = '8px';
+                firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.borderRadius = '50%';
+                firework.style.left = Math.random() * 100 + 'vw';
+                firework.style.top = Math.random() * 100 + 'vh';
+                firework.style.animation = `firework 1.5s ease-out forwards`;
+                container.appendChild(firework);
+                
+                setTimeout(() => firework.remove(), 1500);
+            }
+        }
+
+        // Гітарний симулятор
+        function playGuitarSound(stringIndex) {
+            const frequencies = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = frequencies[stringIndex];
+            
+            gainNode.gain.setValueAtTime(0.3, context.currentTime);
+            gainNode.gain.exponentialRakeToValueAtTime(0.01, context.currentTime + 1);
+            
+            oscillator.start(context.currentTime);
+            oscillator.stop(context.currentTime + 1);
+        }
+
+        // Дозволяємо натискати Enter для вводу коду
+        document.getElementById('codeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkCode();
+            }
+        });
+
+        // Ініціалізація
+        createTechElements();
+        
+        // Додаємо CSS для салюту
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes firework {
+                0% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(3); opacity: 0.7; }
+                100% { transform: scale(1); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
